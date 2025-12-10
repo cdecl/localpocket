@@ -36,11 +36,20 @@ Create a Chrome extension to save current tab URLs to local storage.
     - Updated `popup.js`: Added logic to download JSON blob and parse uploaded file. Deduplication logic added on import.
     - Updated `style.css`: Styled new buttons.
 
+### Phase 6: UX Improvements (Dynamic Resize & Duplicate check)
+- [x] **Feature Request**: Dynamic popup resizing (Expand for more items, max 600px).
+- [x] **Feature Request**: Prevent duplicate URLs and show Toast notifications.
+- [x] **Implementation**:
+    - Updated `style.css`: Added `min-height`/`max-height` for dynamic sizing. Added Toast styles.
+    - Updated `popup.js`: Implemented duplicate check and `showToast` system.
+    - Updated `popup.html`: Added toast container.
+
 ## Current Status
 All requested features implemented and verified.
 URL list supports:
-- Adding current tab.
+- Adding current tab (Duplicate check + Toast feedback).
 - Individual deletion.
 - Title editing.
 - JSON Import/Export.
+- Dynamic resizing (3 to ~5 items).
 Icon is a stack shape.

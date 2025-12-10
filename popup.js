@@ -79,20 +79,28 @@ document.addEventListener('DOMContentLoaded', () => {
 		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
 		if (tab && tab.url) {
-			const newItem = {
-				url: tab.url,
-				title: tab.title || tab.url,
-				timestamp: new Date().toISOString()
-			};
-
 			chrome.storage.local.get(['savedUrls'], (result) => {
 				const savedUrls = result.savedUrls || [];
-				// Check in reverse to see if already exists at the top, or just simply add. 
-				// Let's add safely.
+
+				// Check for duplicates
+				const isDuplicate = savedUrls.some(item => item.url === tab.url);
+
+				if (isDuplicate) {
+					showToast('This URL is already saved!', 'warning');
+					return;
+				}
+
+				const newItem = {
+					url: tab.url,
+					title: tab.title || tab.url,
+					timestamp: new Date().toISOString()
+				};
+
 				savedUrls.unshift(newItem);
 
 				chrome.storage.local.set({ savedUrls }, () => {
 					loadUrls();
+					showToast('URL saved successfully!', 'success');
 				});
 			});
 		}
@@ -103,9 +111,34 @@ document.addEventListener('DOMContentLoaded', () => {
 		if (confirm('Are you sure you want to clear all saved URLs?')) {
 			chrome.storage.local.set({ savedUrls: [] }, () => {
 				loadUrls();
+				showToast('All items cleared.', 'success');
 			});
 		}
 	});
+
+	function showToast(message, type = 'success') {
+		const container = document.getElementById('toast-container');
+		if (!container) return; // Should exist
+
+		const toast = document.createElement('div');
+		toast.className = `toast ${type}`;
+		toast.textContent = message;
+
+		container.appendChild(toast);
+
+		// Trigger reflow to enable transition
+		requestAnimationFrame(() => {
+			toast.classList.add('show');
+		});
+
+		// Remove after 3 seconds
+		setTimeout(() => {
+			toast.classList.remove('show');
+			toast.addEventListener('transitionend', () => {
+				toast.remove();
+			});
+		}, 3000);
+	}
 
 	function loadUrls() {
 		chrome.storage.local.get(['savedUrls'], (result) => {
@@ -217,6 +250,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				savedUrls.splice(index, 1); // Remove item at index
 				chrome.storage.local.set({ savedUrls }, () => {
 					loadUrls(); // Re-render
+					showToast('Item deleted.', 'success');
 				});
 			}
 		});

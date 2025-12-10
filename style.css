@@ -25,7 +25,10 @@
 
 body {
   width: 320px;
-  height: 400px;
+
+  min-height: 400px;
+  max-height: 600px;
+  height: fit-content;
   /* Fixed height for consistency */
   margin: 0;
   padding: 16px;
@@ -43,6 +46,7 @@ h1 {
   margin: 0 0 16px 0;
   text-align: center;
   background: linear-gradient(to right, #818cf8, #c4b5fd);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   color: var(--primary-color);
@@ -237,4 +241,52 @@ li .delete-btn:hover {
   font-size: 0.875rem;
   margin-top: 40px;
   font-style: italic;
+}
+
+/* Toast Notification */
+#toast-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  pointer-events: none;
+  width: 90%;
+  max-width: 300px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+}
+
+.toast {
+  background-color: var(--surface-color);
+  color: var(--text-primary);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  font-size: 0.875rem;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.success {
+  border-color: var(--primary-color);
+  border-left-width: 4px;
+}
+
+.toast.warning {
+  border-color: var(--danger-color);
+  border-left-width: 4px;
 }
