@@ -1,25 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LocalPocket</title>
-    <link rel="stylesheet" href="style.css">
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>LocalPocket</title>
+	<link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <h1>LocalPocket</h1>
-    
-    <div class="actions">
-        <button id="saveBtn" class="primary">Save Current Tab</button>
-    </div>
+	<h1>LocalPocket</h1>
 
-    <ul id="urlList">
-        <!-- List items will be injected here -->
-        <div class="empty-state">No URLs saved yet.</div>
-    </ul>
+	<div class="actions">
+		<button id="saveBtn" class="primary">Save Current Tab</button>
+	</div>
 
-    <button id="clearBtn" class="danger">Clear All</button>
+	<ul id="urlList">
+		<!-- List items will be injected here -->
+		<div class="empty-state">No URLs saved yet.</div>
+	</ul>
 
-    <script src="popup.js"></script>
+	<div class="actions bottom-actions">
+		<button id="exportBtn" class="secondary small">Export JSON</button>
+		<button id="importBtn" class="secondary small">Import JSON</button>
+		<input type="file" id="importFile" accept=".json" style="display: none;">
+	</div>
+
+	<button id="clearBtn" class="danger">Clear All</button>
+
+	<script src="popup.js"></script>
 </body>
+
 </html>

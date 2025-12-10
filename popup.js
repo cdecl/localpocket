@@ -1,10 +1,78 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const saveBtn = document.getElementById('saveBtn');
 	const clearBtn = document.getElementById('clearBtn');
+	const exportBtn = document.getElementById('exportBtn');
+	const importBtn = document.getElementById('importBtn');
+	const importFile = document.getElementById('importFile');
 	const urlList = document.getElementById('urlList');
 
 	// Load saved URLs on startup
 	loadUrls();
+
+	// Export JSON
+	exportBtn.addEventListener('click', () => {
+		chrome.storage.local.get(['savedUrls'], (result) => {
+			const savedUrls = result.savedUrls || [];
+			const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(savedUrls, null, 2));
+			const downloadAnchorNode = document.createElement('a');
+			downloadAnchorNode.setAttribute("href", dataStr);
+			downloadAnchorNode.setAttribute("download", "localpocket_backup.json");
+			document.body.appendChild(downloadAnchorNode); // required for firefox
+			downloadAnchorNode.click();
+			downloadAnchorNode.remove();
+		});
+	});
+
+	// Import JSON - Click hidden file input
+	importBtn.addEventListener('click', () => {
+		importFile.click();
+	});
+
+	// Handle File Selection
+	importFile.addEventListener('change', (e) => {
+		const file = e.target.files[0];
+		if (!file) return;
+
+		const reader = new FileReader();
+		reader.onload = (event) => {
+			try {
+				const importedData = JSON.parse(event.target.result);
+				if (Array.isArray(importedData)) {
+					chrome.storage.local.get(['savedUrls'], (result) => {
+						let existingUrls = result.savedUrls || [];
+
+						// Merge strategies: Filter out duplicates based on URL
+						const existingUrlSet = new Set(existingUrls.map(item => item.url));
+						let addedCount = 0;
+
+						importedData.forEach(item => {
+							if (item.url && !existingUrlSet.has(item.url)) {
+								// Basic validation/sanitization could go here
+								item.title = item.title || item.url;
+								item.timestamp = item.timestamp || new Date().toISOString();
+								existingUrls.push(item);
+								existingUrlSet.add(item.url);
+								addedCount++;
+							}
+						});
+
+						chrome.storage.local.set({ savedUrls: existingUrls }, () => {
+							loadUrls();
+							alert(`Imported ${addedCount} new URLs.`);
+						});
+					});
+				} else {
+					alert('Invalid file format: JSON must be an array of objects.');
+				}
+			} catch (err) {
+				console.error(err);
+				alert('Error parsing JSON file.');
+			}
+			// Reset input so same file can be selected again if needed
+			importFile.value = '';
+		};
+		reader.readAsText(file);
+	});
 
 	// Save current tab
 	saveBtn.addEventListener('click', async () => {

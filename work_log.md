@@ -29,8 +29,18 @@ Create a Chrome extension to save current tab URLs to local storage.
     - Updated `popup.js`: Added click handler to title, input creation, `saveTitle` function.
     - Updated `style.css`: Added pointer cursor and input styling.
 
+### Phase 5: Feature Update (JSON Import/Export)
+- [x] **Feature Request**: Export list to JSON and Import from JSON.
+- [x] **Implementation**:
+    - Updated `popup.html`: Added Export/Import buttons and hidden file input.
+    - Updated `popup.js`: Added logic to download JSON blob and parse uploaded file. Deduplication logic added on import.
+    - Updated `style.css`: Styled new buttons.
 
 ## Current Status
 All requested features implemented and verified.
-URL list supports adding and removing individual items.
+URL list supports:
+- Adding current tab.
+- Individual deletion.
+- Title editing.
+- JSON Import/Export.
 Icon is a stack shape.

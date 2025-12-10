@@ -102,6 +102,20 @@ button.danger:hover {
   border-color: var(--danger-color);
 }
 
+.bottom-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: auto;
+  margin-bottom: 8px;
+}
+
+button.small {
+  font-size: 0.75rem;
+  padding: 6px 12px;
+  flex: 1;
+}
+
+
 ul {
   list-style: none;
   padding: 0;
