@@ -1,5 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const saveBtn = document.getElementById('saveBtn');
+	const saveAllBtn = document.getElementById('saveAllBtn');
+	const openWindowBtn = document.getElementById('openWindowBtn');
 	const clearBtn = document.getElementById('clearBtn');
 	const exportBtn = document.getElementById('exportBtn');
 	const importBtn = document.getElementById('importBtn');
@@ -79,32 +81,75 @@ document.addEventListener('DOMContentLoaded', () => {
 		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
 		if (tab && tab.url) {
-			chrome.storage.local.get(['savedUrls'], (result) => {
-				const savedUrls = result.savedUrls || [];
-
-				// Check for duplicates
-				const isDuplicate = savedUrls.some(item => item.url === tab.url);
-
-				if (isDuplicate) {
-					showToast('This URL is already saved!', 'warning');
-					return;
-				}
-
-				const newItem = {
-					url: tab.url,
-					title: tab.title || tab.url,
-					timestamp: new Date().toISOString()
-				};
-
-				savedUrls.unshift(newItem);
-
-				chrome.storage.local.set({ savedUrls }, () => {
-					loadUrls();
-					showToast('URL saved successfully!', 'success');
-				});
-			});
+			saveTabs([tab]);
 		}
 	});
+
+	// Save all tabs
+	saveAllBtn.addEventListener('click', async () => {
+		const tabs = await chrome.tabs.query({ currentWindow: true });
+		saveTabs(tabs);
+	});
+
+	// Open all saved in new window
+	openWindowBtn.addEventListener('click', () => {
+		chrome.storage.local.get(['savedUrls'], (result) => {
+			const savedUrls = result.savedUrls || [];
+			if (savedUrls.length === 0) {
+				showToast('No URLs to open.', 'warning');
+				return;
+			}
+
+			if (confirm(`Open all ${savedUrls.length} saved URLs in a new window?`)) {
+				const urls = savedUrls.map(item => item.url);
+				chrome.windows.create({ url: urls });
+			}
+		});
+	});
+
+	function saveTabs(tabs) {
+		chrome.storage.local.get(['savedUrls'], (result) => {
+			const savedUrls = result.savedUrls || [];
+			const existingUrlSet = new Set(savedUrls.map(item => item.url));
+			let addedCount = 0;
+
+			// Reverse order to keep tab order when unshifting
+			// But for unshift, we should process from last to first to keep order?
+			// actually if we unshift iteratively, the first one processed ends up last.
+			// So if tabs are [A, B, C], and we want [A, B, C, ...old], 
+			// we should unshift C, then B, then A. => [A, B, C, ...old]
+			// So we reverse the tabs array first.
+
+			const tabsToProcess = [...tabs].reverse();
+
+			tabsToProcess.forEach(tab => {
+				if (tab.url && !existingUrlSet.has(tab.url)) {
+					// Exclude chrome:// and edge:// and about: URLs if desired, but for now keep all valid URLs
+					if (tab.url.startsWith('chrome://') || tab.url.startsWith('edge://') || tab.url.startsWith('about:')) {
+						return;
+					}
+
+					const newItem = {
+						url: tab.url,
+						title: tab.title || tab.url,
+						timestamp: new Date().toISOString()
+					};
+					savedUrls.unshift(newItem);
+					existingUrlSet.add(tab.url);
+					addedCount++;
+				}
+			});
+
+			if (addedCount > 0) {
+				chrome.storage.local.set({ savedUrls }, () => {
+					loadUrls();
+					showToast(`Saved ${addedCount} new URL(s).`, 'success');
+				});
+			} else {
+				showToast('No new URLs to save.', 'warning');
+			}
+		});
+	}
 
 	// Clear all
 	clearBtn.addEventListener('click', () => {

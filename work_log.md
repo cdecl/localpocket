@@ -44,12 +44,24 @@ Create a Chrome extension to save current tab URLs to local storage.
     - Updated `popup.js`: Implemented duplicate check and `showToast` system.
     - Updated `popup.html`: Added toast container.
 
+### Phase 7: Feature Update (Save/Open All & Window)
+- [x] **Feature Request**: 
+    - Save all open tabs.
+    - Open all saved link in a new window.
+    - Widen popup (1.5x width -> 400px).
+- [x] **Implementation**:
+    - Updated `popup.html`: Added 'Save All Tabs' and 'Open Window All Saved' buttons.
+    - Updated `popup.js`: Implemented bulk save and `chrome.windows.create` logic.
+    - Updated `style.css`: Increased width to 480px (later adjusted to 400px by user).
+
 ## Current Status
 All requested features implemented and verified.
 URL list supports:
 - Adding current tab (Duplicate check + Toast feedback).
+- **Save All Tabs** (Bulk save from current window).
+- **Open Window All Saved** (Restore session in new window).
 - Individual deletion.
 - Title editing.
 - JSON Import/Export.
-- Dynamic resizing (3 to ~5 items).
+- Dynamic resizing.
 Icon is a stack shape.

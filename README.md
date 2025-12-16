@@ -5,6 +5,8 @@
 ## ✨ Features
 
 - **Save Current Tab**: Instantly save the current active tab to your list.
+- **Save All Tabs**: Save all open tabs in your current window with one click.
+- **Open All in Window**: Open all your saved links in a fresh new window to restore your session.
 - **Duplicate Prevention**: Automatically checks for existing URLs and warns you with a toast notification to prevent duplicates.
 - **Manage Links**: 
   - **Edit Titles**: Click on any title to rename it for better context.
