@@ -2,6 +2,12 @@
 
 **LocalPocket** is a lightweight Chrome extension that allows you to locally save and manage URLs from your browser tabs. It acts as a private, local "read later" list without requiring any external accounts or cloud sync.
 
+<div align="center">
+  <img src="images/screenshot.png" alt="LocalPocket Screenshot" width="600" />
+</div>
+<br>
+
+
 ## ✨ Features
 
 - **Save Current Tab**: Instantly save the current active tab to your list.
