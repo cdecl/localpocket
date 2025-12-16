@@ -5,7 +5,8 @@
   "description": "Save current page URL to local storage",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "action": {
     "default_popup": "popup.html",
