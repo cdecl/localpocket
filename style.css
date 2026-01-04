@@ -58,6 +58,15 @@ h1 {
   margin-bottom: 0px;
 }
 
+/* Compact top actions */
+.actions.top-bar button {
+  font-size: 11px;
+  padding: 6px 4px;
+  white-space: nowrap;
+  min-width: 0;
+  /* Allow shrinking */
+}
+
 button {
   display: inline-flex;
   align-items: center;

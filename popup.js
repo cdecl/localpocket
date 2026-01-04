@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const saveBtn = document.getElementById('saveBtn');
 	const saveAllBtn = document.getElementById('saveAllBtn');
+	const copyMarkdownBtn = document.getElementById('copyMarkdownBtn');
 	const openWindowBtn = document.getElementById('openWindowBtn');
 	const clearBtn = document.getElementById('clearBtn');
 	const exportBtn = document.getElementById('exportBtn');
@@ -89,6 +90,56 @@ document.addEventListener('DOMContentLoaded', () => {
 	saveAllBtn.addEventListener('click', async () => {
 		const tabs = await chrome.tabs.query({ currentWindow: true });
 		saveTabs(tabs);
+	});
+
+	// Copy Markdown
+	copyMarkdownBtn.addEventListener('click', async () => {
+		const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+		if (!tab) return;
+
+		try {
+			await chrome.scripting.executeScript({
+				target: { tabId: tab.id },
+				files: ['lib/readability.js', 'lib/turndown.js']
+			});
+
+			const result = await chrome.scripting.executeScript({
+				target: { tabId: tab.id },
+				func: () => {
+					try {
+						const documentClone = document.cloneNode(true);
+						const readability = new Readability(documentClone);
+						const article = readability.parse();
+
+						if (!article) return null;
+
+						// Custom Turndown service
+						const turndownService = new TurndownService({
+							headingStyle: 'atx',
+							codeBlockStyle: 'fenced'
+						});
+
+						const markdown = turndownService.turndown(article.content);
+						const title = article.title || document.title;
+
+						return `# ${title}\n\n${markdown}\n\n---\nSource: [${document.title}](${document.location.href})`;
+					} catch (e) {
+						return "Error: " + e.toString();
+					}
+				}
+			});
+
+			const markdown = result[0].result;
+			if (markdown) {
+				await navigator.clipboard.writeText(markdown);
+				showToast('Copied Markdown to clipboard!', 'success');
+			} else {
+				showToast('Failed to parse content.', 'warning');
+			}
+		} catch (err) {
+			console.error(err);
+			showToast('Error: Cannot access this page.', 'danger');
+		}
 	});
 
 	// Open all saved in new window
