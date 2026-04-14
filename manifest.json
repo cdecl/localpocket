@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LocalPocket",
-  "version": "1.0",
+  "version": "1.1",
   "description": "Save current page URL to local storage",
   "permissions": [
     "activeTab",

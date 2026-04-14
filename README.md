@@ -48,6 +48,16 @@ Since this extension is not yet on the Chrome Web Store, you can install it manu
    - The LocalPocket icon (stack shape) should appear in your toolbar.
    - Pin it for easy access!
 
+## 📦 Package for Distribution
+
+Create a Chrome Web Store upload ZIP from the project root:
+
+```bash
+./package.sh
+```
+
+The script reads the extension version from `manifest.json` and creates a file like `dist/localpocket-v1.0.zip`.
+
 ## 📝 Usage Guide
 
 - **Saving**: Click the extension icon and hit **"Save Current Tab"**.
