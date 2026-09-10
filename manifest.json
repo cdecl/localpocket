@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "LocalPocket",
-  "version": "1.1",
-  "description": "Save current page URL to local storage",
+  "version": "1.2",
+  "description": "Save tabs to local storage and browse browser bookmarks in a tree view",
   "permissions": [
     "activeTab",
     "storage",
