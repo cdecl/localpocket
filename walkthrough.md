@@ -1,37 +1,40 @@
-# LocalPocket Walkthrough
+# Walkthrough - LocalPocket 로컬 브라우저 북마크 트리 및 UI 개선
 
-The LocalPocket extension has been implemented. Follow these steps to verify its functionality.
+## 변경 내용 요약
 
-## 1. Load the Extension
-1.  Open Google Chrome.
-2.  Navigate to `chrome://extensions`.
-3.  Enable **Developer mode** in the top right corner.
-4.  Click **Load unpacked**.
-5.  Select the directory: `/Users/cdecl/dev/localpocket`.
+1. **Manifest 권한 추가 (`manifest.json`)**:
+   - 로컬 북마크 트리를 읽기 위한 `"bookmarks"` 권한 및 파비콘 로딩을 위한 `"favicon"` 권한 추가.
 
-## 2. Test Functionality
-1.  Open any website (e.g., [https://www.google.com](https://www.google.com) or [https://news.ycombinator.com](https://news.ycombinator.com)).
-2.  Click the **LocalPocket icon** in the browser toolbar (it looks like a blue/indigo square).
-3.  Click the **"Save Current Tab"** button.
-    - **Verify**: The current site's title and URL appear in the list below the button.
-4.  Navigate to a different website.
-5.  Open the extension popup again and click **"Save Current Tab"**.
-    - **Verify**: The new site is added to the top of the list.
-6.  Close the popup and reopen it.
-    - **Verify**: The list persists.
-7.  Click the **"Clear All"** button.
-    - **Verify**: A confirmation dialog appears.
-    - **Verify**: After confirming, the list is cleared.
+2. **One Dark 테마 적용 및 50:50 대칭 컴팩트 레이아웃 (`popup.html`, `style.css`)**:
+   - **전체 너비를 기존의 3/4 크기인 570px**로 축소 (좌우 각 285px씩 1:1 대칭 배치).
+   - **One Dark 색상 테마 완벽 적용**:
+     - 메인 배경: `#282c34` (One Dark Editor 배경)
+     - 사이드바 배경: `#21252b` (One Dark Sidebar 배경)
+     - 헤더 및 입력창: `#1e2227` / `#181a1f`
+     - 카드/서피스: `#2c313a` (Hover: `#353b45`)
+     - 텍스트: 기본 `#abb2bf`, 제목/하이라이트 `#e5e9f0`, 주석/타임스탬프 `#5c6370`
+     - One Dark 시그니처 악센트: Blue (`#61afef`), Cyan (`#56b6c2`), Green (`#98c379`), Gold/Yellow (`#e5c07b`), Purple (`#c678dd`), Coral Red (`#e06c75`).
 
-## 3. Implementation Details
-- **Manifest V3**: Compliant with latest Chrome standards.
-- **Storage**: Uses `chrome.storage.local` for persistence.
-- **Styling**: Dark mode, premium feel with CSS variables.
-- **Icon**: Generated custom icon.
+3. **Copy MD 기능 및 버튼 삭제 (`popup.html`, `popup.js`)**:
+   - 상단 액션바에서 `Copy MD` 버튼 삭제 및 관련 스크립트 실행 로직 정리.
+   - 상단 저장 버튼 영역을 `Save Tab`, `Save All` 2개로 깔끔하게 정리.
 
-## Files Created
-- `manifest.json`: Configuration.
-- `popup.html`: Structure.
-- `popup.js`: Logic.
-- `style.css`: Styles.
-- `icon.png`: Extension icon.
+4. **저장된 링크 항목 높이 3/4 축소 (`style.css`)**:
+   - 각 링크 카드(`li`)의 내부 패딩(`5px 8px`), 줄간격, 여백 및 폰트 크기(`0.8rem` / `0.6875rem` / `0.6rem`), 삭제 버튼 크기를 최적화하여 **카드의 전체 높이를 기존 대비 3/4 크기로 컴팩트하게 축소**. 한 화면에 훨씬 많은 링크가 표시되도록 개선.
+
+3. **두 번째 라인 툴바 제거 및 검색/트리 구조 최적화**:
+   - 요청에 따라 두 번째 줄의 아이콘 툴바를 완전히 제거.
+   - 상단 검색창(`북마크 검색`, 즐겨찾기 필터, `...` 메뉴) 바로 아래에 북마크 트리가 시원하게 표시되도록 배치.
+   - 기존 툴바 기능(최근 북마크 보기, 트리 보기 복귀, 링크 목록 복사 등)은 `...` (더보기 메뉴) 내로 깔끔하게 이전.
+
+4. **북마크 트리 및 클릭 오픈 기능 (`popup.js`)**:
+   - 폴더 접기/펼치기 화살표 및 아이콘 제공.
+   - 폴더 펼침 상태를 `localStorage`에 자동 저장하여 재오픈 시에도 상태 유지.
+   - 각 북마크의 파비콘(Favicon) 자동 로딩 및 Fallback 처리.
+   - **북마크 클릭 시 `chrome.tabs.create`를 통해 브라우저 새 탭으로 페이지 오픈**.
+   - 검색창 입력 시 북마크 실시간 필터링 및 키워드 노란색 하이라이트.
+   - 브라우저 북마크 변경(추가/수정/삭제/이동) 시 자동 실시간 동기화.
+
+## 빌드 및 검증
+- `node --check popup.js`: 구문 에러 없음 확인 완료.
+- `./package.sh`: `dist/localpocket-v1.1.zip` 패키징 빌드 완료.

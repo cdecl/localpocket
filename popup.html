@@ -9,30 +9,77 @@
 </head>
 
 <body>
-	<h1>LocalPocket</h1>
+	<div class="app-layout">
+		<!-- Left Sidebar: Browser Bookmarks Tree -->
+		<aside id="bookmarksSidebar" class="bookmarks-sidebar">
+			<div class="bm-header">
+				<div class="bm-search-wrap">
+					<svg class="bm-search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<circle cx="11" cy="11" r="8"></circle>
+						<line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+					</svg>
+					<input type="text" id="bmSearchInput" placeholder="북마크 검색" autocomplete="off" spellcheck="false">
+					<button id="bmSearchClearBtn" class="bm-clear-btn" title="검색 지우기" style="display: none;">&times;</button>
+				</div>
+				<button id="bmStarBtn" class="bm-icon-btn" title="즐겨찾기 / 북마크바 토글">
+					<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+						<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+					</svg>
+				</button>
+				<div class="bm-menu-wrapper">
+					<button id="bmMenuBtn" class="bm-icon-btn" title="메뉴">
+						<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+							<circle cx="12" cy="12" r="1.5"></circle>
+							<circle cx="19" cy="12" r="1.5"></circle>
+							<circle cx="5" cy="12" r="1.5"></circle>
+						</svg>
+					</button>
+					<div id="bmDropdownMenu" class="bm-dropdown-menu">
+						<button id="bmExpandAllBtn">모두 펼치기</button>
+						<button id="bmCollapseAllBtn">모두 접기</button>
+						<button id="bmRefreshBtn">북마크 새로고침</button>
+						<button id="bmRecentBtn">최근 북마크</button>
+						<button id="bmTreeBtn">트리 보기</button>
+						<button id="bmCopyAllBtn">링크 목록 복사</button>
+					</div>
+				</div>
+			</div>
 
-	<div class="actions top-bar">
-		<button id="saveBtn" class="primary">Save Tab</button>
-		<button id="saveAllBtn" class="primary">Save All</button>
-		<button id="copyMarkdownBtn" class="primary" style="background-color: #2ecc71;">Copy MD</button>
+
+			<!-- Bookmark Tree & List Container -->
+			<div id="bmContentArea" class="bm-content-area">
+				<div id="bookmarkTree" class="bookmark-tree">
+					<div class="bm-loading">북마크 불러오는 중...</div>
+				</div>
+			</div>
+		</aside>
+
+		<!-- Right Main Panel: Existing LocalPocket -->
+		<main id="mainPanel" class="main-panel">
+			<h1>LocalPocket</h1>
+
+			<div class="actions top-bar">
+				<button id="saveBtn" class="primary">Save Tab</button>
+				<button id="saveAllBtn" class="primary">Save All</button>
+			</div>
+			<div class="actions" style="margin-top: 8px;">
+				<button id="openWindowBtn" class="secondary">Open Window All Saved</button>
+			</div>
+
+			<ul id="urlList">
+				<!-- List items will be injected here -->
+				<div class="empty-state">No URLs saved yet.</div>
+			</ul>
+
+			<div class="actions bottom-actions">
+				<button id="exportBtn" class="secondary small">Export JSON</button>
+				<button id="importBtn" class="secondary small">Import JSON</button>
+				<input type="file" id="importFile" accept=".json" style="display: none;">
+			</div>
+
+			<button id="clearBtn" class="danger">Clear All</button>
+		</main>
 	</div>
-	<div class="actions" style="margin-top: 8px;">
-		<button id="openWindowBtn" class="secondary">Open Window All Saved</button>
-	</div>
-
-	<ul id="urlList">
-		<!-- List items will be injected here -->
-		<div class="empty-state">No URLs saved yet.</div>
-	</ul>
-
-	<div class="actions bottom-actions">
-		<button id="exportBtn" class="secondary small">Export JSON</button>
-		<button id="importBtn" class="secondary small">Import JSON</button>
-		<input type="file" id="importFile" accept=".json" style="display: none;">
-	</div>
-
-	<button id="clearBtn" class="danger">Clear All</button>
-
 
 	<div id="toast-container"></div>
 	<script src="popup.js"></script>
